@@ -2,8 +2,10 @@ import { cn } from '@/lib/shadcn/utils';
 import { IconStore } from '@/components/icon-store';
 import { IInputControl } from '../../interface';
 
-interface IProps
-  extends Pick<IInputControl, 'disabled' | 'type' | 'className'> {
+interface IProps extends Pick<
+  IInputControl,
+  'disabled' | 'type' | 'className'
+> {
   onIconClick: () => void;
 }
 

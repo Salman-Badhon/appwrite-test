@@ -2,7 +2,8 @@ import { ChangeEventHandler, InputHTMLAttributes } from 'react';
 import { IInputs } from '../common/interface';
 
 export interface ITextareaControl
-  extends IInputs<ChangeEventHandler<HTMLTextAreaElement>>,
+  extends
+    IInputs<ChangeEventHandler<HTMLTextAreaElement>>,
     Omit<InputHTMLAttributes<HTMLTextAreaElement>, 'onChange' | 'name'> {
   /** The current value of the textarea control. */
   value: string;

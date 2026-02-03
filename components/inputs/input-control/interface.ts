@@ -3,7 +3,8 @@ import { ChangeEventHandler } from 'react';
 import { IInputs } from '../common/interface';
 
 export interface IInputControl
-  extends IInputs<ChangeEventHandler<HTMLInputElement>>,
+  extends
+    IInputs<ChangeEventHandler<HTMLInputElement>>,
     Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'name'> {
   /** The current value of the input control. */
   value: string | number;

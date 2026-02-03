@@ -8,7 +8,8 @@ interface IItem {
   value: string;
 }
 export interface ISelectControl
-  extends IInputs<(params: { value: string; name: string }) => void>,
+  extends
+    IInputs<(params: { value: string; name: string }) => void>,
     Omit<InputHTMLAttributes<HTMLSelectElement>, 'onChange' | 'name'> {
   // Array of items for the select control.
   items: IItem[];

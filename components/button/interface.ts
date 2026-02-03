@@ -23,15 +23,13 @@ export interface IActionButton extends IBaseButton {
 }
 
 export interface ILinkButton
-  extends IBaseButton,
-    Omit<ICustomLink, 'label' | 'className'> {
+  extends IBaseButton, Omit<ICustomLink, 'label' | 'className'> {
   /** Specifies the type of button as a link button. */
   type: 'link';
 }
 
 export interface IFormButton
-  extends IBaseButton,
-    Pick<IActionButton, 'loading'> {
+  extends IBaseButton, Pick<IActionButton, 'loading'> {
   /** Specifies the type of button as an form button. */
   type: 'submit' | 'reset';
 }
