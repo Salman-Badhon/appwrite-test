@@ -44,9 +44,9 @@ const config: StorybookConfig = {
     reactDocgen: 'react-docgen-typescript',
   },
   env: {
-    NEXT_PUBLIC_SANITY_PROJECT_ID: 'fjujb4d7',
+    NEXT_PUBLIC_SANITY_PROJECT_ID: 'hws7k33l',
     NEXT_PUBLIC_SANITY_DATASET: 'production',
-    NEXT_PUBLIC_SANITY_API_VERSION: '2023-07-01',
+    NEXT_PUBLIC_SANITY_API_VERSION: '2026-02-03',
   },
 };
 export default config;
