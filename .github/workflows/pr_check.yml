@@ -1,0 +1,78 @@
+name: Check PR
+
+on:
+  pull_request:
+    types: [labeled]
+  workflow_dispatch:
+
+# Cancel in-progress actions when a new action is triggered
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check-code-quality:
+    if: ${{ github.event.label.name == 'in review' && !contains(github.event.pull_request.labels.*.name, 'in review (with storybook)') }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22.x]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # 👈 Required to retrieve git history
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install
+      - run: pnpm run tsc
+      - run: pnpm run lint
+      - run: pnpm run format:check
+
+  check-code-quality-and-deploy-storybook:
+    if: ${{ github.event.label.name == 'in review (with storybook)' && !contains(github.event.pull_request.labels.*.name, 'in review') }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22.x]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # 👈 Required to retrieve git history
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install
+      - run: pnpm run tsc
+      - run: pnpm run lint
+      - run: pnpm run format:check
+      - name: Publish to Chromatic
+        id: chromatic
+        uses: chromaui/action@latest
+        with:
+          projectToken: ${{ secrets.CHROMATIC_TOKEN }}
+          onlyChanged: true
+      - name: Post Result Comments
+        uses: mshick/add-pr-comment@v2
+        with:
+          allow-repeats: true
+          message: |
+            ## PR Actions Summary
+            [Storybook](${{steps.chromatic.outputs.storybookUrl}})
+      # We are still keeping the summary print as a redundancy. We need to see
+      # what happens when we have too many comments and commmits in a PR
+      # Does this message get lost?
+      - name: Publish Summary
+        run: echo -e "[Storybook](${{steps.chromatic.outputs.storybookUrl}})" >> $GITHUB_STEP_SUMMARY

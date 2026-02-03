@@ -1,0 +1,29 @@
+name: LH NextJS Sanity Starter | Main
+
+on:
+  push:
+    # Update to main branch
+    branches:
+      - sanity-integration
+  workflow_dispatch:
+
+# Cancel in-progress actions when a new action is triggered
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22.x]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # 👈 Required to retrieve git history
+      - name: Invoke deployment hook
+        uses: distributhor/workflow-webhook@v3
+        with:
+          webhook_url: ${{ vars.SANITY_INTEGRATION_DEPLOY_HOOK }}
